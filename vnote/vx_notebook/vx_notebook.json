@@ -1,0 +1,30 @@
+{
+    "attachment_folder": "vx_attachments",
+    "config_mgr": "vx.vnotex",
+    "created_time": "2021-09-26T04:34:52Z",
+    "description": "go语言学习笔记",
+    "extra_configs": {
+    },
+    "history": [
+        {
+            "last_accessed_time": "2021-09-29T06:37:12Z",
+            "line_number": 283,
+            "path": "go语言特性.md"
+        },
+        {
+            "last_accessed_time": "2021-09-29T06:37:25Z",
+            "line_number": -1,
+            "path": "go语言特性(一）.md"
+        },
+        {
+            "last_accessed_time": "2021-10-19T05:45:21Z",
+            "line_number": 506,
+            "path": "go语言特性(一).md"
+        }
+    ],
+    "image_folder": "vx_images",
+    "name": "Go",
+    "next_node_id": "2",
+    "version": "1",
+    "version_controller": "dummy.vnotex"
+}
