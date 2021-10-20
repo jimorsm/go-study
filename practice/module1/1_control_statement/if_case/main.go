@@ -1,24 +1,29 @@
 package main
 
 import (
-	"fmt"
 	"flag"
+	"fmt"
 )
 
-
 func main() {
-	a := 123
-	if a > 2 {
-		fmt.Println(a)
-	}
-	switch a {
-	case 10:
-		fmt.Println(a)
+	age := flag.Int("age", 18, "age")
+	sex := flag.String("sex", "male", "sex")
+	flag.Parse()
 
-	case 100:                    
-		fmt.Println(a)
+	switch *sex {
+	case "male":
+		if *age > 18 {
+			fmt.Println("man")
+		} else {
+			fmt.Println("boy")
+		}
 
-	default:
-		fmt.Println(a)
+	case "female":
+		if *age > 18 {
+			fmt.Println("women")
+		} else {
+			fmt.Println("girl")
+		}
+
 	}
 }
