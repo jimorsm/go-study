@@ -1,189 +1,8 @@
-# go语言特性
-Go 语言是一个可以编译高效，支持高并发的，面向垃圾回收的全新语言.
+# go基础语法（一）常用数据结构与控制语句
 
-- 秒级完成大型程序的单节点编译。
-- 依赖管理清晰。
-- 不支持继承，程序员无需花费精力定义不同类型之间的关系。
-- 支持垃圾回收，支持并发执行，支持多线程通讯。
-- 对多核计算机支持友好。
+## 常用数据结构
 
-Go 语言特性衍生来源:
-![](vx_images/1789631179197.png)
-
-## go语言环境变量
-- GOROOT：go的安装目录
-- GOPATH
-    - src：存放源代码
-    - pkg：存放依赖包
-    - bin：存放可执行文件
-- 其他常用变量
-    - GOOS，GOARCH，GOPROXY
-    - 国内用户建议设置goproxy：`export GOPROXY=https://goproxy.cn`
-
-## go 基本命令
-
-- `bug`:     start a bug report
-- `build`:    compile packages and dependencies
-- `clean`:    remove object files and cached files
-- `doc`:    show documentation for package or symbol
-- `env`:    print Go environment information
-- `fix`:    update packages to use new APIs
-- `fmt`:    gofmt (reformat) package sources
-- `generate`:     generate Go files by processing source
-- `get`:    add dependencies to current module and install them
-- `install`:    compile and install packages and dependencies
-- `list`:    list packages or modules
-- `mod`:    module maintenance
-- `run`:    compile and run Go program
-- `test`:    test packages
-- `tool`:    run specified go tool
-- `version`: print Go version
-- `vet`: report likely mistakes in packages
-
-### go build
-- Go 语言不支持动态链接，因此编译时会将所有依赖编译进同一个二进制文件。
-- 指定输出目录。
-    - `go build –o bin/mybinary .`
-- 常用环境变量设置编译操作系统和 CPU 架构。
-    - `GOOS=linux GOARCH=amd64 go build`
-- 全支持列表。
-    - `$GOROOT/src/go/build/syslist.go`
-    
-### go test
-Go 原生自带测试
-
-```go
-import "testing"
-
-func TestIncrease(t *testing.T) {
-    t.Log("Start testing")
-    increase(1, 2)
-}
-```
-`go test ./.... -v` 运行测试
-go test命令扫描所有*_test.go为结尾的文件，惯例是将测试代码与正式代码放在同目录，
-如 foo.go 的测试代码一般写在 foo_test.go
-
-### go vet
-代码静态检查，发现可能的bug或者可以的构造。
-
-- Print-format 错误，检查类型不匹配的print
-```go
-str := “hello world!”
-fmt.Printf("%d\n", str)
-```
-
-- Boolen 错误， 检查一直为 true、false 或者冗余的表达式
-`fmt.Println(i != 0 || i != 1)`
-
-- Range 循环，比如如下代码主协程会先退出，go routine无法被执行
-```go
-words := []string{"foo", "bar", "baz"}
-for _, word := range words {
-    go func() {
-       fmt.Println(word).
-    }()
-}
-```
-
-- Unreachable的代码，如 return 之后的代码
-
-- 其他错误，比如变量自赋值，error 检查滞后等
-```go
-res, err := http.Get("https://www.spreadsheetdb.io/")
-defer res.Body.Close()
-if err != nil {
-    log.Fatal(err)
-}
-```
-
-## go 基础语法
-
-### 控制结构
-
-#### 分支控制
-
-- `if`
-
-```go
-// 基本形式
-if condition1 {
-    // do something
-} else if condition2 {
-    // do something else
-} else {
-    // catch-all or default
-}
-
-// if 的简短语句
-// 同 for 一样， if 语句可以在条件表达式前执行一个简单的语句。
-if v := x - 100; v < 0{
-    return v
-}
-```
-
-- `switch`
-
-    Go里面switch默认相当于每个case最后带有break，匹配成功后不会自动向下执行其他case，而是跳出整个switch, 但是可以使用fallthrough强制执行后面的case代码。
-
-```go
-switch var1 {
-    case val1: //空分支
-    case val2:
-        fallthrough //执行case3中的f()
-    case val3:
-        f()
-    default: //默认分支
-        ...
-}
-```
-
-#### 循环控制
-
-Go 只有一种循环结构：for 循环。
-
-- `for`
-
-```go
-// 计入计数器的循环
-// for 初始化语句; 条件语句; 修饰语句 {}
-for i := 0; i < 10; i++ {
-    sum += i
-}
-
-// 初始化语句和后置语句是可选的，此场景与 while 等价（Go 语言不支持 while）
-for ; sum < 1000; {
-    sum += sum
-}
-
-// 无限循环
-for {
-    if condition1 {
-        break
-    }
-}
-```
-
-- `for-range`
-
-```go
-// 遍历数组，切片，字符串，Map 等
-for index, char := range myString {
-    ...
-}
-for key, value := range MyMap {
-    ...
-}
-for index, value := range MyArray {
-...
-}
-// 需要注意：如果 for range 遍历指针数组，则 value 取出的指
-// 针地址为原指针地址的拷贝
-```
-
-### 常用数据结构
-
-#### 变量与常量
+### 变量与常量
 
 - 常量
     - 格式： `const identifier type`
@@ -200,7 +19,7 @@ for index, value := range MyArray {
         - 函数外的每个语句都必须以关键字开始（var, func 等等），因此 := 结构不能在函数外使用。
         - `c, python, java := true, false, "no!"`
         
-#### 类型转换与推导
+### 类型转换与推导
 - 类型转换
     - 表达式 T(v) 将值 v 转换为类型 T。
         - 数值转换：
@@ -221,7 +40,7 @@ for index, value := range MyArray {
         - `var i int`
         - `j := i // j 也是一个 int`
         
-#### 数组
+### 数组
 
 - 相同类型且长度固定连续内存片段
 - 以编号访问每个元素
@@ -230,7 +49,7 @@ for index, value := range MyArray {
 - 示例：
     `myArray := [3]int{1,2,3}`
     
-#### 切片
+### 切片
 
 - 切片是对数组一个连续片段的引用
 - 数组定义中不指定长度即为切片
@@ -277,7 +96,7 @@ func deleteItem(slice []int, index int) []int {
     fmt.Printf("mySlice %+v\n", mySlice)
     ```
     
-#### map
+### map
 
 - 声明方法： `var map1 map[keytype]valuetype`
 
@@ -308,7 +127,7 @@ fmt.Println(f())
     }
     ```
 
-#### 指针
+### 指针
 - Go 语言支持指针，但不支持指针运算
 - 指针变量的值为内存地址
 - 未赋值的指针为 nil
@@ -323,7 +142,7 @@ func main(){
 }
 ```
 
-#### 结构体
+### 结构体
 
 - 声明方法：`type identifier struct`
 
@@ -350,9 +169,150 @@ type MyType struct {
     }
     ```
     
-#### 类型别名 todo
+### 类型别名 todo
 
-### 函数
+## 控制语句
+
+### 分支控制
+
+- `if`
+
+```go
+// 基本形式
+if condition1 {
+    // do something
+} else if condition2 {
+    // do something else
+} else {
+    // catch-all or default
+}
+
+// if 的简短语句
+// 同 for 一样， if 语句可以在条件表达式前执行一个简单的语句。
+if v := x - 100; v < 0{
+    return v
+}
+```
+
+- `switch`
+    - Go里面switch默认相当于每个case最后带有break，匹配成功后不会自动向下执行其他case，而是跳出整个switch, 但是可以使用fallthrough强制执行后面的case代码。
+    ```go
+    switch var1 {
+        case val1: //空分支
+        case val2:
+            fallthrough //执行case3中的f()
+        case val3:
+            f()
+        default: //默认分支
+            ...
+    }
+    ```
+    - Go的switch可接受任意形式的表达式。
+
+    ```go
+    k := 1
+    switch {
+    case k == 1:
+        fmt.Println("k = ",k)
+    case k == 2:
+        fmt.Println("k = ",k)
+    case k == 3:
+        fmt.Println("k = ",k)
+    default:       
+        fmt.Println("default case")
+    }
+
+    switch k {
+    case 1:
+        fmt.Println("k = ",k)
+    case 2:
+        fmt.Println("k = ",k)
+    case 3:
+        fmt.Println("k = ",k)
+    default:       
+        fmt.Println("default case")
+    }
+    ```
+    - 多条件
+
+    ```go
+    k := 4
+    switch k {
+    case 1, 2, 3:
+        fmt.Println("k = ",k)
+    case 4, 5, 6:
+        fmt.Println("k = ",k)
+    case 7, 8, 9:
+        fmt.Println("k = ",k)
+    default:       
+        fmt.Println("default case")
+    }
+    ```
+
+    - 用于 type-switch 来判断某个 interface 变量中实际存储的变量类型
+
+    ```go
+    var t interface{}
+    switch t.(type) {
+    case int:
+        fmt.Println("int")
+    case string:
+        fmt.Println("string")
+    case bool:
+        fmt.Println("bool")
+    case float64:
+        fmt.Println("float64")
+    default:
+        fmt.Println("default interface")
+    }
+    ```
+
+### 循环控制
+
+Go 只有一种循环结构：for 循环。
+
+- `for`
+
+```go
+// 计入计数器的循环
+// for 初始化语句; 条件语句; 修饰语句 {}
+for i := 0; i < 10; i++ {
+    sum += i
+}
+
+// 初始化语句和后置语句是可选的，此场景与 while 等价（Go 语言不支持 while）
+for ; sum < 1000; {
+    sum += sum
+}
+
+// 无限循环
+for {
+    if condition1 {
+        break
+    }
+}
+```
+
+- `for-range`
+
+```go
+// 遍历数组，切片，字符串，Map 等
+for index, char := range myString {
+    ...
+}
+for key, value := range MyMap {
+    ...
+}
+for index, value := range MyArray {
+...
+}
+// 需要注意：如果 for range 遍历指针数组，则 value 取出的指
+// 针地址为原指针地址的拷贝
+```
+
+
+
+## 函数
 
 格式：
 ```
@@ -367,7 +327,7 @@ func function_name( [parameter list] ) [return_types] {
 -   函数体：函数定义的代码集合。
 
 
-#### main 函数
+### main 函数
 
 - 每个 Go 程序都应该有个 main package
 - main package 里的 main 函数是 Go 语言程序入口
@@ -408,7 +368,7 @@ func init(){
 }
 ```
 
-#### 返回值
+### 返回值
 - 多返回值
     - 函数可以返回任意数量的返回值
 - 命名返回值
@@ -418,7 +378,7 @@ func init(){
 - 调用者可忽略部分返回值
 `result,_=strconv.Atoi(origStr)`
 
-#### 传递边长参数
+### 传递边长参数
 
 go 中可变长参数允许调用方传递任意多个相同类型的参数
 
@@ -431,7 +391,7 @@ myArray:=[]string{}
 myArray=append(myArray,"a","b","c")
 ```
 
-#### 内置函数
+### 内置函数
 
 |       函数名       |             作用              |
 | ----------------- | ----------------------------- |
@@ -443,7 +403,7 @@ myArray=append(myArray,"a","b","c")
 | print,println     | 打印                          |
 | complex,real,imag | 操作复数                       |
 
-#### 回调函数（Callback）
+### 回调函数（Callback）
 
 函数作为参数传入其它函数，并在其他函数内部调用执行
 
@@ -466,7 +426,7 @@ func decrease(a, b int) {
 }
 ```
 
-#### 闭包
+### 闭包
 闭包是匿名函数
 
 - 不能独立存在
@@ -484,7 +444,7 @@ defer func(){
 }()
 ```
 
-#### 方法
+### 方法
 
 方法就是一个包含了接受者的函数,
 
@@ -504,13 +464,13 @@ func (s *Server) StartTLS(){
 }
 ```
 
-#### 函数传参
+### 函数传参
 
 - go 语言只有一种规则——传值
 - 函数内修改参数的值不会影响函数外原始变量的值
 - 可以传递指针参数将变量地址传递给调用函数，Go语言会复制该指针作为函数内的地址，但指向同一地址
 
-#### 接口
+### 接口
 
 - 接口定义一组方法合集
 - 适用场景：Kubernetes 中有大量的接口抽象和多种实现
@@ -562,7 +522,7 @@ func main() {
     - Struct 初始化意味着空间分配，对struct的引用不会出现空指针
     
 
-#### 反射
+### 反射
 
 - `reflect.TypeOf()` 返回检查对象的类型
 - `reflect.ValueOf()`返回检查对象的值
@@ -591,7 +551,7 @@ result:=v1.Method(0).Call(nil)
 fmt.Println("Result:", result)
 ```
 
-#### 面向对象编程
+### 面向对象编程
 
 - 可见性控制
     - public —— 常量、变量、类型、接口、接口、函数等的名称大些
@@ -601,7 +561,7 @@ fmt.Println("Result:", result)
 - 多态
     - 通过接口实现，通过接口定义方法集，编写多套实现
     
-#### Json 编解码
+### Json 编解码
 
 - `Unmarshal`：从 string 转换 struct
 
@@ -647,9 +607,9 @@ for k,v:= range objMap{
 }
 ```
 
-### 常用语法
+## 常用语法
 
-#### 错误处理
+### 错误处理
 
 - go 语言无内置 exception 机制，只提供 error 接口供定义错误
 ```go
@@ -676,7 +636,7 @@ func (e *StatusError) Error() string {
 }
 ```
 
-#### defer
+### defer
 
 - 函数返回之前执行某个语句或函数
     - 等同于 Java 和 C# 的 finally
@@ -687,7 +647,7 @@ func (e *StatusError) Error() string {
     
 - 注意 defer 是函数级别的关键字，在函数退出时执行
 
-#### panic 和 recover
+### panic 和 recover
 - `panic`： 可在系统出现不可恢复错误时主动调用panic, panic会使当前线程直接crash
 - `defer`： 保证执行并把控制权交还给接收到panic的函数调用者
 - `recover`：函数从panic或者错误场景中恢复
@@ -702,13 +662,13 @@ defer func() {
 panic("a panic is triggered")
 ```
 
-### 多线程
+## 多线程
 
-#### 并发和并行
+### 并发和并行
 
 ![](vx_images/2716948159283.png)
 
-#### 协程
+### 协程
 
 - 进程
     - 分配系统资源（CPU时间、内存等）基本单位
@@ -722,7 +682,7 @@ panic("a panic is triggered")
     - glang 在 runtime、系统调用等多方面对goroutine调度进行了分装和处理，当遇到长时间执行或者进行系统调用时，会主动把当前 goroutine 的 CPU 转让出去，让其他 goroutine 能被调度并执行，也就是 Golang 从语言层面支持了协程。
     
 
-#### CSP（Communicating Sequential Process）
+### CSP（Communicating Sequential Process）
 
 - CSP
     - 描述两个独立的并发实体通过共享的通讯 channel 进行通信的并发模型。
@@ -732,7 +692,7 @@ panic("a panic is triggered")
 - 通道 channel
     - 类似 Unix 的 Pipe，用于协程之间通讯和同步。协程之间虽然解耦，但是它们和 Channel 有着耦合。
     
-#### 协程和协程的差异
+### 协程和协程的差异
 
 - 每个goroutine (协程) 默认占用内存远比 Java 、C 的线程少
     - goroutine：2KB
@@ -743,7 +703,7 @@ panic("a panic is triggered")
 - GOMAXPROCS
     - 控制并行线程数量
     
-#### 协程示例
+### 协程示例
 
 ```go
 for i:=0;i<10;i++{
@@ -752,7 +712,7 @@ for i:=0;i<10;i++{
 time.Sleep(time.Second)
 ```
 
-#### channel -- 多线程通信
+### channel -- 多线程通信
 
 - Channel 是多个协程之间通讯的管道
     - 一端发送数据，一端接收数据
@@ -771,13 +731,13 @@ go func() {
 i := <- ch //从Channel中数据并赋值
 ```
 
-#### 通道缓冲
+### 通道缓冲
 
 - 基于 Channel 的通信是同步的
 - 当缓冲区满时，数据的发送是阻塞的
 - 通过 make 关键字创建通道时可以定义缓冲区容量，默认缓冲区容量为0
 
-#### 便利通道缓冲区
+### 便利通道缓冲区
 
 ```go
 ch := make(chan int, 10)
@@ -796,7 +756,7 @@ for v:=range ch {
 }
 ```
 
-#### 单向通道
+### 单向通道
 - 只发送通道：`var sendOnly chan<- int`
 - 只接收通道：`var readOnly <-chan int`
 
@@ -818,7 +778,7 @@ func consume(ch <-chan int){
 }
 ```
 
-#### 关闭通道
+### 关闭通道
 - 通道无需每次关闭
 - 关闭的作用是告诉接收者该通道再无新数据发送
 - 只有发送方需要关闭通道
@@ -831,7 +791,7 @@ if v,notClosed:=<-ch;notClosed{
 }
 ```
 
-#### select
+### select
 
 - 当多个协程同时运行时，可通过 select 轮询多个通道
     - 如果所有的通道都阻塞则等待，如定义了 default 则执行 default
@@ -848,7 +808,7 @@ select {
 }
 ```
 
-#### 定时器 Timer
+### 定时器 Timer
 
 - time.Ticker 以指定的时间间隔重复向通道 C  发送时间值
 - 使用场景： 为协程设定超时时间
@@ -864,7 +824,7 @@ select{
 }
 ```
 
-#### 上下文 Context
+### 上下文 Context
 
 - 超时、取消操作或者一些异常情况，往往需要进行抢占操作或者中断后续操作
 - Context 是设置截至日期、同步信号，传递请求相关值的结构体
@@ -890,7 +850,7 @@ type Context interface{
     - context.WithCanel
         - 创建一个可取消的 context
         
-#### 停止一个子协程
+### 停止一个子协程
 
 - 基于channel
 ```
